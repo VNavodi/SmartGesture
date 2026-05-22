@@ -67,10 +67,13 @@ def main():
                         "Pinky" : hand_landmarks.landmark[20]
                     }
 
+                    thumb  = finger_tips["Thumb"] # Get the normalized coordinates of the thumb tip
                     index = finger_tips["Index"]  # Get the normalized coordinates of the index fingertip
-                        
-                    cursor.move(index.x, index.y) # Move the cursor based on the index fingertip's normalized coordinates
+                    middle = finger_tips["Middle"] # Get the normalized coordinates of the middle fingertip
 
+
+                    cursor.move(index.x, index.y) # Move the cursor based on the index fingertip's normalized coordinates
+                    cursor.handle_clicks(thumb, index, middle)
 
                     for name, landmark in finger_tips.items():
                         x,y=int(landmark.x*w), int(landmark.y*h)

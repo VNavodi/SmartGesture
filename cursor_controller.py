@@ -1,5 +1,6 @@
 import pyautogui
 import numpy as np
+import time
 from collections import deque
 
 # Safety: disable pyautogui failsafe (move mouse to corner to stop)
@@ -25,6 +26,10 @@ class CursorController:
         self._history = deque(maxlen=SMOOTH_BUFFER)
         self._last_screen_x = None
         self._last_screen_y = None
+        self._last_left_click = 0.0   # epoch time of last left click
+        self._last_right_click= 0.0   # epoch time of last right click
+        self.PINCH_THRESHOLD = 0.05      # normalised distance to trigger a click
+        self.CLICK_COOLDOWN = 0.4       # seconds between repeated clicks
 
     def _map_to_screen(self, norm_x: float, norm_y: float):
         """
@@ -73,3 +78,31 @@ class CursorController:
             pyautogui.moveTo(sx, sy)
             self._last_screen_x = sx
             self._last_screen_y = sy
+
+
+    @staticmethod
+    def _pinch_distance(lm_a, lm_b) -> float:
+        """Euclidean distance between two normalised landmarks."""
+        return ((lm_a.x - lm_b.x) ** 2 + (lm_a.y - lm_b.y) ** 2) ** 0.5
+
+    def handle_clicks(self, thumb, index, middle):
+        """
+        thumb, index, middle — MediaPipe landmark objects (normalised).
+        Left click  : thumb ↔ index  pinch
+        Right click : thumb ↔ middle pinch
+        Cooldown prevents repeated firing while fingers stay close.
+        """
+        now = time.time()
+
+        left_dist  = self._pinch_distance(thumb, index)
+        right_dist = self._pinch_distance(thumb, middle)
+
+        if left_dist < self.PINCH_THRESHOLD:
+            if now - self._last_left_click > self.CLICK_COOLDOWN:
+                pyautogui.click(button="left")
+                self._last_left_click = now
+
+        elif right_dist < self.PINCH_THRESHOLD:
+            if now - self._last_right_click > self.CLICK_COOLDOWN:
+                pyautogui.click(button="right")
+                self._last_right_click = now
