@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
+from cursor_controller import CursorController
 
 
 # MediaPipe drawing utilities and hand tracking module
@@ -15,6 +16,7 @@ cap.set(3, 1280)
 cap.set(4, 720)
 
 def main():
+    cursor = CursorController()
 
     with mp_hands.Hands(
         max_num_hands=1,   # Detect up to 1 hands
@@ -64,6 +66,11 @@ def main():
                         "Ring" : hand_landmarks.landmark[16],
                         "Pinky" : hand_landmarks.landmark[20]
                     }
+
+                    index = finger_tips["Index"]  # Get the normalized coordinates of the index fingertip
+                        
+                    cursor.move(index.x, index.y) # Move the cursor based on the index fingertip's normalized coordinates
+
 
                     for name, landmark in finger_tips.items():
                         x,y=int(landmark.x*w), int(landmark.y*h)
