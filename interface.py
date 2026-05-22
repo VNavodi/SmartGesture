@@ -41,13 +41,13 @@ class LauncherApp:
 
         self._make_button(
             label="✏  Drawing Board Mode",
-            badge="Coming Soon",
-            color="#2e2e2e",
-            hover="#3a3a3a",
-            command=None,
+            badge=None,
+            color="#27ae60",
+            hover="#2ecc71",
+            command=self._launch_drawing_board,
             font=btn_font,
             badge_font=badge_font,
-            text_color="#666666",
+            
         )
 
         self._make_button(
@@ -82,7 +82,7 @@ class LauncherApp:
             pady=14,
             width=22,
             cursor="hand2" if command else "arrow",
-            command=command if command else lambda: None,
+            command=command if command else None,
         )
         btn.pack()
 
@@ -104,6 +104,14 @@ class LauncherApp:
         """Hide launcher, run main.py, restore launcher on exit."""
         self.root.withdraw()
         script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "main.py")
+        proc = subprocess.Popen([sys.executable, script])
+        proc.wait()
+        self.root.deiconify()
+
+    def _launch_drawing_board(self):
+        """Hide launcher, run drawing_board.py, restore launcher on exit."""
+        self.root.withdraw()
+        script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "drawing_board.py")
         proc = subprocess.Popen([sys.executable, script])
         proc.wait()
         self.root.deiconify()
