@@ -22,11 +22,11 @@ DEAD_ZONE = 4              # pixels — ignore jitter smaller than this
 # ────────────────────────────────────────────────────────────────
 
 # ── Scroll tuning ───────────────────────────────────────────────
-SCROLL_DEAD_ZONE   = 0.012   # normalised Y delta to ignore micro-jitter
-SCROLL_ACCEL_MIN   = 8      # scroll clicks at slowest movement
-SCROLL_ACCEL_MAX   = 60       # scroll clicks at fastest movement
-SCROLL_SPEED_LOW   = 0.005   # norm-Y delta → min acceleration
-SCROLL_SPEED_HIGH  = 0.02   # norm-Y delta → max acceleration
+SCROLL_DEAD_ZONE   = 0.008   # normalised Y delta to ignore micro-jitter
+SCROLL_ACCEL_MIN   = 20      # scroll clicks at slowest movement
+SCROLL_ACCEL_MAX   = 120       # scroll clicks at fastest movement
+SCROLL_SPEED_LOW   = 0.003   # norm-Y delta → min acceleration
+SCROLL_SPEED_HIGH  = 0.015   # norm-Y delta → max acceleration
 # ────────────────────────────────────────────────────────────────
 
 
