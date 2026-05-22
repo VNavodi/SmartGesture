@@ -73,8 +73,11 @@ def main():
 
                     scrolling = cursor.handle_scroll(index, middle, hand_landmarks)
                     if not scrolling:
+                            cursor.handle_drag(hand_landmarks)
                             cursor.move(index.x, index.y) # Move the cursor based on the index fingertip's normalized coordinates
-                            cursor.handle_clicks(thumb, index, middle)
+                            if not cursor._dragging:
+                                cursor.handle_clicks(thumb, index, middle)
+                            
 
                     for name, landmark in finger_tips.items():
                         x,y=int(landmark.x*w), int(landmark.y*h)

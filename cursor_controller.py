@@ -42,6 +42,7 @@ class CursorController:
 
         self._scroll_prev_y   = None   # last index-finger Y while scrolling
         self._scroll_active   = False  # True while two-finger gesture held
+        self._dragging = False  # True while fist is held
 
     def _map_to_screen(self, norm_x: float, norm_y: float):
         """
@@ -173,3 +174,25 @@ class CursorController:
         pyautogui.scroll(direction)
 
         return True
+    def handle_drag(self, hand_landmarks) -> bool:
+        """
+        Fist = all four fingers curled → mouseDown (drag).
+        Open hand = any finger extended → mouseUp (drop).
+        Returns True while dragging (cursor move still runs normally).
+        """
+        lm = hand_landmarks.landmark
+        TIPS = [8, 12, 16, 20]
+        PIPS = [6, 10, 14, 18]
+
+        fingers_up = [lm[tip].y < lm[pip].y for tip, pip in zip(TIPS, PIPS)]
+        fist = not any(fingers_up)  # all four fingers curled
+
+        if fist and not self._dragging:
+            pyautogui.mouseDown(button="left")
+            self._dragging = True
+
+        elif not fist and self._dragging:
+            pyautogui.mouseUp(button="left")
+            self._dragging = False
+
+        return self._dragging
